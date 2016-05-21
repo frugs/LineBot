@@ -19,7 +19,7 @@
         "LINE_CHANNEL_MID": {
             "description": "Channel MID",
             "required": true
-        },
+        }
     },
     "addons": [
         "fixie:tricycle"
