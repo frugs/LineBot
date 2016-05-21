@@ -34,7 +34,7 @@ class CallbackResource(object):
         line_url = 'https://trialbot-api.line.me/v1/bot/message/' + content_id + '/content/'
 
         # 画像の取得
-        result = requests.get(line_url, headers=self.header)
+        result = requests.get(line_url, headers=self.header, proxies=PROXIES)
 
         logger.debug('receive image: {}'.format(result.json()))
 
