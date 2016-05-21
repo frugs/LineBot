@@ -39,7 +39,19 @@ class CallbackResource(object):
 
         for msg in receive_params['result']:
 
-            utt=msg['content']['text']
+            if msg['content']['contentType'] == 1:  # Text
+                utt=msg['content']['text']
+                if utt == 'はい':
+                    text = '購入しました'
+                elif utt == 'いいえ':
+                    text = '購入しませんでした'
+                else:
+                    text = 'よくわかりませんでした'
+            elif msg['content']['contentType'] == 2:  # Image
+                # Confirm whether purchase or not
+                text = 'この商品を購入しますか？'
+            else:
+                text = '未対応の処理'
 
             send_content = {
                 'to': [msg['content']['from']],
@@ -48,9 +60,10 @@ class CallbackResource(object):
                 'content': {
                     'contentType': 1,
                     'toType': 1,
-                    'text': 'こんにちは',
+                    'text': text,
                 },
             }
+
             send_content = json.dumps(send_content)
 
             res = requests.post(ENDPOINT_URI, data=send_content,
