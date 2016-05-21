@@ -36,7 +36,7 @@ class CallbackResource(object):
         # 画像の取得
         result = requests.get(line_url, headers=self.header, proxies=PROXIES)
 
-        logger.debug('receive image: {}'.format(result.json()))
+        logger.debug('receive image: {}'.format(result.content))
 
     def on_post(self, req, resp):
 
