@@ -36,7 +36,7 @@ class CallbackResource(object):
         # 画像の取得
         result = requests.get(line_url, headers=self.header)
 
-        logger.debug('receive image: {}'.format(result))
+        logger.debug('receive image: {}'.format(result.content))
 
     def on_post(self, req, resp):
 
@@ -58,7 +58,7 @@ class CallbackResource(object):
             elif msg['content']['contentType'] == 2:  # Image
                 # Confirm whether purchase or not
                 text = 'この商品を購入しますか？'
-                #self._get_image(receive_params['result']['content']['id'])
+                self._get_image(receive_params['result']['content']['id'])
             else:
                 text = '未対応の処理'
 
