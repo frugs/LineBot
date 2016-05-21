@@ -1,5 +1,4 @@
 Cython==0.24
-doco==0.0.3
 falcon==0.3.0
 gevent==1.1.1
 greenlet==0.4.9
