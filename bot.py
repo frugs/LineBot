@@ -68,7 +68,7 @@ class CallbackResource(object):
             elif msg['content']['contentType'] == 2:  # Image
                 # Confirm whether purchase or not
                 decode_data = self._get_image(msg['content']['id'])
-                items = decode_data.split(',')
+                items = decode_data.decode("utf-8").split(',')
                 text = 'この{0}円の{1}買う？'.format(items[5],items[4])
                 global item_id
                 global shop_id
