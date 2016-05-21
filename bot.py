@@ -58,7 +58,7 @@ class CallbackResource(object):
             elif msg['content']['contentType'] == 2:  # Image
                 # Confirm whether purchase or not
                 text = 'この商品を購入しますか？'
-                self._get_image(receive_params['result']['content']['id'])
+                self._get_image(msg['content']['id'])
             else:
                 text = '未対応の処理'
 
