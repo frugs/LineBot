@@ -30,6 +30,13 @@ class CallbackResource(object):
         'X-Line-Trusted-User-With-ACL': os.environ['LINE_CHANNEL_MID'],
     }
 
+    def _get_image(self, content_id):
+        line_url = 'https://trialbot-api.line.me/v1/bot/message/'+ content_id + '/content/'
+
+        # 画像の取得
+        result = requests.get(line_url, headers=self.header)
+        
+        logger.debug('receive image: {}'.format(result))
 
     def on_post(self, req, resp):
 
@@ -51,6 +58,7 @@ class CallbackResource(object):
             elif msg['content']['contentType'] == 2:  # Image
                 # Confirm whether purchase or not
                 text = 'この商品を購入しますか？'
+                self._get_image(receive_params['result']['content']['id'])
             else:
                 text = '未対応の処理'
 
