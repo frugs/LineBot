@@ -36,6 +36,7 @@ class CallbackResource(object):
         body = req.stream.read()
 
         receive_params = json.loads(body.decode('utf-8'))
+        logger.debug('receive_params: {}'.format(receive_params))
 
         for msg in receive_params['result']:
 
