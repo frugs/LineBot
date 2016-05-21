@@ -43,7 +43,7 @@ class CallbackResource(object):
         img = base64.encodestring(img).decode('utf-8')
         content = {'img': img}
         res = requests.post('http://52.196.88.89:8000/scanner', data=json.dumps(content))
-        return res
+        return res.content
 
     def on_post(self, req, resp):
 
