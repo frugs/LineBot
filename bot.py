@@ -45,6 +45,33 @@ class CallbackResource(object):
         res = requests.post('http://52.196.88.89:8000/scanner', data=json.dumps(content))
         return res.content
 
+    def create_text(self, msg, text):
+        send_content = {
+            'to': [msg['content']['from']],
+            'toChannel': 1383378250,  # Fixed value
+            'eventType': '138311608800106203',  # Fixed value
+            'content': {
+                'contentType': 1,
+                'toType': 1,
+                'text': text,
+            },
+        }
+        return send_content
+
+    def create_sticker(self, msg, text):
+        send_content = {
+                'to': [msg['content']['from']],
+                'toChannel': 1383378250,  # Fixed value
+                'eventType': '138311608800106203',  # Fixed value
+                'content': {
+                    'contentType': 8,
+                    'contentMetadata': {'SKIP_BADGE_COUNT': 'true', 'STKTXT': '[ビシッ]', 'STKVER': '100', 'AT_RECV_MODE': '2', 'STKID': '13', 'STKPKGID': '1'},
+                    'toType': 1,
+                    'text': text,
+                },
+            }
+        return send_content
+
     def on_post(self, req, resp):
 
         body = req.stream.read()
@@ -64,6 +91,7 @@ class CallbackResource(object):
                     text = '買わなかったよ〜'
                 else:
                     text = 'よくわかりませんでした'
+                send_content = self.create_text(msg, text)
             elif msg['content']['contentType'] == 2:  # Image
                 # Confirm whether purchase or not
                 decode_data = self._get_image(msg['content']['id'])
@@ -71,8 +99,10 @@ class CallbackResource(object):
                 text = 'この{0}円の{1}買う？'.format(items[5],items[4])
                 self.shop_id, self.item_id = items[0], items[1]
                 logger.debug("decode_data: {}".format(decode_data))
+                send_content = self.create_text(msg, text)
             else:
                 text = '未対応の処理'
+                send_content = self.create_sticker(msg, text)
 
             """
             send_content = {
@@ -85,7 +115,7 @@ class CallbackResource(object):
                     'text': text,
                 },
             }
-            """
+
 
             send_content = {
                 'to': [msg['content']['from']],
@@ -93,11 +123,12 @@ class CallbackResource(object):
                 'eventType': '138311608800106203',  # Fixed value
                 'content': {
                     'contentType': 8,
-                    'contentMetadata': {'SKIP_BADGE_COUNT': 'true', 'AT_RECV_MODE': '2', 'STKID': '14', 'STKTXT': '[グーだよ]', 'STKPKGID': '1', 'STKVER': '100'},
+                    'contentMetadata': {'SKIP_BADGE_COUNT': 'true', 'STKTXT': '[ビシッ]', 'STKVER': '100', 'AT_RECV_MODE': '2', 'STKID': '13', 'STKPKGID': '1'},
                     'toType': 1,
                     'text': text,
                 },
             }
+            """
 
             send_content = json.dumps(send_content)
 
