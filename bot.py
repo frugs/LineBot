@@ -3,7 +3,7 @@ import os
 from logging import DEBUG, StreamHandler, getLogger
 
 import requests
-
+import base64
 import falcon
 
 # logger
@@ -18,7 +18,6 @@ PROXIES = {
     'http': os.environ.get('FIXIE_URL', ''),
     'https': os.environ.get('FIXIE_URL', '')
 }
-DOCOMO_API_KEY = os.environ.get('DOCOMO_API_KEY', '')
 
 
 
@@ -40,8 +39,7 @@ class CallbackResource(object):
 
         logger.debug('receive image: {}'.format(result.content))
         img = result.content
-        import json
-        import base64
+
         img = base64.encodestring(img).decode('utf-8')
         content = {'img': img}
         res = requests.post('http://52.196.88.89:8000/scanner', data=json.dumps(content))
@@ -57,7 +55,7 @@ class CallbackResource(object):
         for msg in receive_params['result']:
 
             if msg['content']['contentType'] == 1:  # Text
-                utt=msg['content']['text']
+                utt = msg['content']['text']
                 if utt == '買っといてー':
                     text = '買っといたよ〜'
                     logger.debug("Item ID: {}".format(self.item_id))
@@ -72,11 +70,11 @@ class CallbackResource(object):
                 items = decode_data.decode("utf-8").split(',')
                 text = 'この{0}円の{1}買う？'.format(items[5],items[4])
                 self.shop_id, self.item_id = items[0], items[1]
-                #text = 'この商品を購入しますか？'
                 logger.debug("decode_data: {}".format(decode_data))
             else:
                 text = '未対応の処理'
 
+            """
             send_content = {
                 'to': [msg['content']['from']],
                 'toChannel': 1383378250,  # Fixed value
@@ -87,11 +85,23 @@ class CallbackResource(object):
                     'text': text,
                 },
             }
+            """
+
+            send_content = {
+                'to': [msg['content']['from']],
+                'toChannel': 1383378250,  # Fixed value
+                'eventType': '138311608800106203',  # Fixed value
+                'content': {
+                    'contentType': 8,
+                    'contentMetadata': {'SKIP_BADGE_COUNT': 'true', 'AT_RECV_MODE': '2', 'STKID': '14', 'STKTXT': '[グーだよ]', 'STKPKGID': '1', 'STKVER': '100'},
+                    'toType': 1,
+                    'text': text,
+                },
+            }
 
             send_content = json.dumps(send_content)
 
-            res = requests.post(ENDPOINT_URI, data=send_content,
-                                headers=self.header, proxies=PROXIES)
+            res = requests.post(ENDPOINT_URI, data=send_content, headers=self.header, proxies=PROXIES)
 
             resp.body = json.dumps('OK')
 
