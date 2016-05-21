@@ -19,7 +19,7 @@ PROXIES = {
     'https': os.environ.get('FIXIE_URL', '')
 }
 DOCOMO_API_KEY = os.environ.get('DOCOMO_API_KEY', '')
-item_id, shop_id = None, None
+#item_id, shop_id = None, None
 
 
 class CallbackResource(object):
@@ -59,8 +59,8 @@ class CallbackResource(object):
                 utt=msg['content']['text']
                 if utt == '買っといてー':
                     text = '買っといたよ〜'
-                    logger.debug("Item ID: {}".format(item_id))
-                    logger.debug("Shop ID: {}".format(shop_id))
+                    #logger.debug("Item ID: {}".format(item_id))
+                    #logger.debug("Shop ID: {}".format(shop_id))
                 elif utt == 'いいえ':
                     text = '買わなかったよ〜'
                 else:
@@ -70,9 +70,7 @@ class CallbackResource(object):
                 decode_data = self._get_image(msg['content']['id'])
                 items = decode_data.decode("utf-8").split(',')
                 text = 'この{0}円の{1}買う？'.format(items[5],items[4])
-                global item_id
-                global shop_id
-                shop_id, item_id = items[0], items[1]
+                #shop_id, item_id = items[0], items[1]
                 #text = 'この商品を購入しますか？'
                 logger.debug("decode_data: {}".format(decode_data))
             else:
