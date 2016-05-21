@@ -19,7 +19,7 @@ PROXIES = {
     'https': os.environ.get('FIXIE_URL', '')
 }
 DOCOMO_API_KEY = os.environ.get('DOCOMO_API_KEY', '')
-#item_id, shop_id = None, None
+
 
 
 class CallbackResource(object):
@@ -30,6 +30,7 @@ class CallbackResource(object):
         'X-Line-ChannelSecret': os.environ['LINE_CHANNEL_SECRET'],
         'X-Line-Trusted-User-With-ACL': os.environ['LINE_CHANNEL_MID'],
     }
+    item_id, shop_id = None, None
 
     def _get_image(self, content_id):
         line_url = 'https://trialbot-api.line.me/v1/bot/message/' + content_id + '/content/'
@@ -59,8 +60,8 @@ class CallbackResource(object):
                 utt=msg['content']['text']
                 if utt == '買っといてー':
                     text = '買っといたよ〜'
-                    #logger.debug("Item ID: {}".format(item_id))
-                    #logger.debug("Shop ID: {}".format(shop_id))
+                    logger.debug("Item ID: {}".format(self.item_id))
+                    logger.debug("Shop ID: {}".format(self.shop_id))
                 elif utt == 'いいえ':
                     text = '買わなかったよ〜'
                 else:
@@ -70,7 +71,7 @@ class CallbackResource(object):
                 decode_data = self._get_image(msg['content']['id'])
                 items = decode_data.decode("utf-8").split(',')
                 text = 'この{0}円の{1}買う？'.format(items[5],items[4])
-                #shop_id, item_id = items[0], items[1]
+                self.shop_id, self.item_id = items[0], items[1]
                 #text = 'この商品を購入しますか？'
                 logger.debug("decode_data: {}".format(decode_data))
             else:
