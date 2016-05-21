@@ -43,6 +43,7 @@ class CallbackResource(object):
         img = base64.encodestring(img).decode('utf-8')
         content = {'img': img}
         res = requests.post('http://52.196.88.89:8000/scanner', data=json.dumps(content))
+        return res
 
     def on_post(self, req, resp):
 
@@ -64,7 +65,8 @@ class CallbackResource(object):
             elif msg['content']['contentType'] == 2:  # Image
                 # Confirm whether purchase or not
                 text = 'この商品を購入しますか？'
-                self._get_image(msg['content']['id'])
+                decode_data = self._get_image(msg['content']['id'])
+                logger.debug("decode_data: {}".format(decode_data))
             else:
                 text = '未対応の処理'
 
