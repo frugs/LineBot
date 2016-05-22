@@ -85,7 +85,7 @@ class CallbackResource(object):
 
             content_type = msg['content']['contentType']
             if content_type == 2:  # Image
-                #self.state = {"Buy?": False, "Use?": False, "Item": []}
+                CallbackResource.state = {"Buy?": False, "Use?": False, "Item": []}
                 decode_data = self._get_image(msg['content']['id'])
                 self.state['Item'] = decode_data.decode("utf-8").split(',')
                 text = 'この{0}円の{1}買う？'.format(self.state['Item'][5],self.state['Item'][4])
