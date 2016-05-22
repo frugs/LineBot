@@ -101,9 +101,9 @@ class CallbackResource(object):
                     self.state['Buy?'] = True
                 elif self.state['Buy?'] == False and utt == 'いいえ':
                     text = '買わなかったよ〜'
-                elif self.state['Buy?'] and self.state['Use?'] == False and utt == '使わない':
+                elif self.state['Buy?'] and (self.state['Use?'] == False) and utt == '使わない':
                     text = '使わなかったよ'
-                elif self.state['Buy?'] and self.state['Use?'] == False and utt == 'お願い':
+                elif self.state['Buy?'] and (self.state['Use?'] == False) and utt == 'お願い':
                     text = 'クーポン使ったよ'
                     # ger user info
                     self.state['Use?'] = True
