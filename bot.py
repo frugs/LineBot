@@ -82,7 +82,7 @@ class CallbackResource(object):
         logger.debug('receive_params: {}'.format(receive_params))
 
         for msg in receive_params['result']:
-
+            """
             content_type = msg['content']['contentType']
             if content_type == 2:  # Image
                 self.__class__.state = {"Buy?": False, "Use?": False, "Item": []}
@@ -93,17 +93,17 @@ class CallbackResource(object):
                 send_content = self.create_text(msg, text)
             elif content_type == 1:  # Text
                 utt = msg['content']['text']
-                if self.state['Buy?'] == False and utt == '買っといてー':
+                if self.__class__.state['Buy?'] == False and utt == '買っといてー':
                     # text=クーポンあるけど使う？
                     coupon = get_coupon_by_id()
                     coupon_name = coupon['record']['name']['value']
                     text = '{0}があるけど使う？'.format(coupon_name)
                     self.__class__.state['Buy?'] = True
-                elif self.state['Buy?'] == False and utt == 'いいえ':
+                elif self.__class__.state['Buy?'] == False and utt == 'いいえ':
                     text = '買わなかったよ〜'
-                elif self.state['Buy?'] and (self.state['Use?'] == False) and utt == '使わない':
+                elif self.__class__.state['Buy?'] and (self.__class__.state['Use?'] == False) and utt == '使わない':
                     text = '使わなかったよ'
-                elif self.state['Buy?'] and (self.state['Use?'] == False) and utt == 'お願い':
+                elif self.__class__.state['Buy?'] and (self.__class__.state['Use?'] == False) and utt == 'お願い':
                     text = 'クーポン使ったよ'
                     # ger user info
                     self.__class__.state['Use?'] = True
@@ -163,7 +163,7 @@ class CallbackResource(object):
             else:
                 text = '未対応の処理'
                 send_content = self.create_sticker(msg, text)
-            """
+
 
 
             send_content = json.dumps(send_content)
