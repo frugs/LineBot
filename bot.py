@@ -30,7 +30,8 @@ class CallbackResource(object):
         'X-Line-ChannelSecret': os.environ['LINE_CHANNEL_SECRET'],
         'X-Line-Trusted-User-With-ACL': os.environ['LINE_CHANNEL_MID'],
     }
-    item_id, shop_id, price = None, None, 10000
+    #item_id, shop_id, price = None, None, 10000
+    state = {"Buy?": False, "Use?": False, "Item": []}
 
     def _get_image(self, content_id):
         line_url = 'https://trialbot-api.line.me/v1/bot/message/' + content_id + '/content/'
@@ -82,6 +83,45 @@ class CallbackResource(object):
 
         for msg in receive_params['result']:
 
+            content_type = msg['content']['contentType']
+            if content_type == 2:  # Image
+                self.state = {"Buy?": False, "Use?": False, "Item": []}
+                decode_data = self._get_image(msg['content']['id'])
+                self.state['Item'] = decode_data.decode("utf-8").split(',')
+                text = 'この{0}円の{1}買う？'.format(self.state['Item'][5],self.state['Item'][4])
+                logger.debug("decode_data: {}".format(decode_data))
+                send_content = self.create_text(msg, text)
+            elif content_type == 1:  # Text
+                utt = msg['content']['text']
+                if self.state['Buy?'] == False and utt == '買っといてー':
+                    # text=クーポンあるけど使う？
+                    coupon = get_coupon_by_id()
+                    coupon_name = coupon['record']['name']['value']
+                    text = '{0}があるけど使う？'.format(coupon_name)
+                    self.state['Buy?'] = True
+                elif self.state['Buy?'] == False and utt == 'いいえ':
+                    text = '買わなかったよ〜'
+                elif self.state['Buy?'] and self.state['Use?'] == False and utt == '使わない':
+                    text = '使わなかったよ'
+                elif self.state['Buy?'] and self.state['Use?'] == False and utt == 'お願い':
+                    text = 'クーポン使ったよ'
+                    # ger user info
+                    self.state['Use?'] = True
+                    user = get_user_by_id()
+                    base_mgold, base_exp = int(user['record']['mgold']['value']), int(user['record']['exp']['value'])
+                    # update user info
+                    mgold = base_mgold + int(int(self.state['Item'][5]) * 0.1)
+                    exp = base_exp + int(int(self.state['Item'][5]) * 0.1)
+                    update_user_info(str(mgold), str(exp))
+                else:
+                    text = 'よくわかりませんでした'
+                send_content = self.create_text(msg, text)
+            else:
+                text = "Error Handling"
+                send_content = self.create_sticker(msg, text)
+
+
+            """
             if msg['content']['contentType'] == 1:  # Text
                 utt = msg['content']['text']
                 if utt == '買っといてー':
@@ -121,6 +161,7 @@ class CallbackResource(object):
             else:
                 text = '未対応の処理'
                 send_content = self.create_sticker(msg, text)
+            """
 
             send_content = json.dumps(send_content)
 
