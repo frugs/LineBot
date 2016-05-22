@@ -30,7 +30,7 @@ class CallbackResource(object):
         'X-Line-ChannelSecret': os.environ['LINE_CHANNEL_SECRET'],
         'X-Line-Trusted-User-With-ACL': os.environ['LINE_CHANNEL_MID'],
     }
-    item_id, shop_id = None, None
+    item_id, shop_id, price = None, None, 10000
 
     def _get_image(self, content_id):
         line_url = 'https://trialbot-api.line.me/v1/bot/message/' + content_id + '/content/'
@@ -38,7 +38,7 @@ class CallbackResource(object):
         # 画像の取得
         result = requests.get(line_url, headers=self.header, proxies=PROXIES)
 
-        logger.debug('receive image: {}'.format(result.content))
+        #logger.debug('receive image: {}'.format(result.content))
         img = result.content
 
         img = base64.encodestring(img).decode('utf-8')
@@ -85,14 +85,27 @@ class CallbackResource(object):
             if msg['content']['contentType'] == 1:  # Text
                 utt = msg['content']['text']
                 if utt == '買っといてー':
-                    text = '買っといたよ〜'
                     logger.debug("Item ID: {}".format(self.item_id))
                     logger.debug("Shop ID: {}".format(self.shop_id))
+
                     # text=クーポンあるけど使う？
                     coupon = get_coupon_by_id()
                     logger.debug(("Coupon: {}".format(coupon)))
+                    coupon_name = coupon['record']['name']['value']
+                    text = '{0}があるけど使う？'.format(coupon_name)
                 elif utt == 'いいえ':
                     text = '買わなかったよ〜'
+                elif utt == '使わない':
+                    text = '使わなかったよ'
+                elif utt == 'お願い':
+                    text = 'クーポン使ったよ'
+                    # ger user info
+                    user = get_user_by_id()
+                    base_mgold, base_exp = user['record']['mgold'], user['record']['exp']
+                    # update user info
+                    mgold = base_mgold - int(self.price * 0.1)
+                    exp = base_exp - int(self.price * 0.1)
+                    update_user_info(mgold, exp)
                 else:
                     text = 'よくわかりませんでした'
                 send_content = self.create_text(msg, text)
@@ -101,7 +114,7 @@ class CallbackResource(object):
                 decode_data = self._get_image(msg['content']['id'])
                 items = decode_data.decode("utf-8").split(',')
                 text = 'この{0}円の{1}買う？'.format(items[5],items[4])
-                self.shop_id, self.item_id = items[0], items[1]
+                self.shop_id, self.item_id, self.price = items[0], items[1], items[5]
                 logger.debug("decode_data: {}".format(decode_data))
                 send_content = self.create_text(msg, text)
             else:
