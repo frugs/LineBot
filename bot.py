@@ -103,8 +103,8 @@ class CallbackResource(object):
                     user = get_user_by_id()
                     base_mgold, base_exp = user['record']['mgold']['value'], user['record']['exp']['value']
                     # update user info
-                    mgold = base_mgold - int(self.price * 0.1)
-                    exp = base_exp - int(self.price * 0.1)
+                    mgold = base_mgold - int(int(self.price) * 0.1)
+                    exp = base_exp - int(int(self.price) * 0.1)
                     update_user_info(mgold, exp)
                 else:
                     text = 'よくわかりませんでした'
