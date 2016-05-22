@@ -105,7 +105,7 @@ class CallbackResource(object):
                     # update user info
                     mgold = base_mgold - int(int(self.price) * 0.1)
                     exp = base_exp - int(int(self.price) * 0.1)
-                    update_user_info(mgold, exp)
+                    update_user_info(str(mgold), str(exp))
                 else:
                     text = 'よくわかりませんでした'
                 send_content = self.create_text(msg, text)

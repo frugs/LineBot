@@ -53,3 +53,5 @@ if __name__ == '__main__':
     coupon = get_coupon_by_id()
     pprint.pprint(coupon)
     print(coupon['record']['name'])
+
+    update_user_info(1000, 1000)
