@@ -82,7 +82,7 @@ class CallbackResource(object):
         logger.debug('receive_params: {}'.format(receive_params))
 
         for msg in receive_params['result']:
-            """
+
             content_type = msg['content']['contentType']
             if content_type == 2:  # Image
                 self.__class__.state = {"Buy?": False, "Use?": False, "Item": []}
@@ -114,19 +114,21 @@ class CallbackResource(object):
                     exp = base_exp + int(int(self.state['Item'][5]) * 0.1)
                     update_user_info(str(mgold), str(exp))
                 else:
-                    logger.debug("state {}".format(self.state))
-                    logger.debug("state {}".format(self.__class__.state))
+                    logger.debug("unk state {}".format(self.state))
+                    logger.debug("unk state {}".format(self.__class__.state))
                     text = 'よくわかりませんでした'
                 send_content = self.create_text(msg, text)
             else:
                 text = "Error Handling"
                 send_content = self.create_sticker(msg, text)
+            logger.debug("unk state {}".format(self.state))
+            logger.debug("unk state {}".format(self.__class__.state))
 
 
             """
             if msg['content']['contentType'] == 1:  # Text
                 utt = msg['content']['text']
-                if utt == '買っといてー':
+                if utt == '買っといて':
                     logger.debug("Item ID: {}".format(self.item_id))
                     logger.debug("Shop ID: {}".format(self.shop_id))
 
@@ -163,6 +165,7 @@ class CallbackResource(object):
             else:
                 text = '未対応の処理'
                 send_content = self.create_sticker(msg, text)
+            """
 
 
 
