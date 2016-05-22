@@ -83,7 +83,7 @@ class CallbackResource(object):
         logger.debug('receive_params: {}'.format(receive_params))
 
         for msg in receive_params['result']:
-
+            """
             content_type = msg['content']['contentType']
             if content_type == 2:  # Image
                 self.__class__.buy, self.__class__.use, self.__class__.item = False, False, ()
@@ -166,7 +166,7 @@ class CallbackResource(object):
             else:
                 text = '未対応の処理'
                 send_content = self.create_sticker(msg, text)
-            """
+
 
 
 
