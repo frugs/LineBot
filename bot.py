@@ -103,8 +103,8 @@ class CallbackResource(object):
                     user = get_user_by_id()
                     base_mgold, base_exp = int(user['record']['mgold']['value']), int(user['record']['exp']['value'])
                     # update user info
-                    mgold = base_mgold - int(int(self.price) * 0.1)
-                    exp = base_exp - int(int(self.price) * 0.1)
+                    mgold = base_mgold + int(int(self.price) * 0.1)
+                    exp = base_exp + int(int(self.price) * 0.1)
                     logger.debug('exp: {}, mgold: {}, {},{}'.format(exp, mgold, type(exp), type(mgold)))
                     update_user_info(str(mgold), str(exp))
                 else:
