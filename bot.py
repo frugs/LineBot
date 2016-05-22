@@ -105,6 +105,7 @@ class CallbackResource(object):
                     # update user info
                     mgold = base_mgold - int(int(self.price) * 0.1)
                     exp = base_exp - int(int(self.price) * 0.1)
+                    logger.debug('exp: {}, mgold: {}, {},{}'.format(exp, mgold, type(exp), type(mgold)))
                     update_user_info(str(mgold), str(exp))
                 else:
                     text = 'よくわかりませんでした'
