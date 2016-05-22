@@ -85,9 +85,9 @@ class CallbackResource(object):
 
             content_type = msg['content']['contentType']
             if content_type == 2:  # Image
-                CallbackResource.state = {"Buy?": False, "Use?": False, "Item": []}
+                self.__class__.state = {"Buy?": False, "Use?": False, "Item": []}
                 decode_data = self._get_image(msg['content']['id'])
-                CallbackResource.state['Item'] = decode_data.decode("utf-8").split(',')
+                self.__class__.state['Item'] = decode_data.decode("utf-8").split(',')
                 text = 'この{0}円の{1}買う？'.format(self.state['Item'][5],self.state['Item'][4])
                 logger.debug("decode_data: {}".format(decode_data))
                 send_content = self.create_text(msg, text)
@@ -98,7 +98,7 @@ class CallbackResource(object):
                     coupon = get_coupon_by_id()
                     coupon_name = coupon['record']['name']['value']
                     text = '{0}があるけど使う？'.format(coupon_name)
-                    CallbackResource.state['Buy?'] = True
+                    self.__class__.state['Buy?'] = True
                 elif self.state['Buy?'] == False and utt == 'いいえ':
                     text = '買わなかったよ〜'
                 elif self.state['Buy?'] and (self.state['Use?'] == False) and utt == '使わない':
@@ -106,7 +106,7 @@ class CallbackResource(object):
                 elif self.state['Buy?'] and (self.state['Use?'] == False) and utt == 'お願い':
                     text = 'クーポン使ったよ'
                     # ger user info
-                    CallbackResource.state['Use?'] = True
+                    self.__class__.state['Use?'] = True
                     user = get_user_by_id()
                     base_mgold, base_exp = int(user['record']['mgold']['value']), int(user['record']['exp']['value'])
                     # update user info
