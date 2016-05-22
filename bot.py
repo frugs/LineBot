@@ -30,8 +30,8 @@ class CallbackResource(object):
         'X-Line-ChannelSecret': os.environ['LINE_CHANNEL_SECRET'],
         'X-Line-Trusted-User-With-ACL': os.environ['LINE_CHANNEL_MID'],
     }
-    #item_id, shop_id, price = None, None, 10000
-    state = {"Buy?": False, "Use?": False, "Item": []}
+    item_id, shop_id, price = None, None, 10000
+    #state = {"Buy?": False, "Use?": False, "Item": []}
 
     def _get_image(self, content_id):
         line_url = 'https://trialbot-api.line.me/v1/bot/message/' + content_id + '/content/'
@@ -82,7 +82,7 @@ class CallbackResource(object):
         logger.debug('receive_params: {}'.format(receive_params))
 
         for msg in receive_params['result']:
-
+            """
             content_type = msg['content']['contentType']
             if content_type == 2:  # Image
                 self.__class__.state = {"Buy?": False, "Use?": False, "Item": []}
@@ -163,7 +163,7 @@ class CallbackResource(object):
             else:
                 text = '未対応の処理'
                 send_content = self.create_sticker(msg, text)
-            """
+
 
             send_content = json.dumps(send_content)
 
