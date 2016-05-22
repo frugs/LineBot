@@ -19,6 +19,18 @@
         "LINE_CHANNEL_MID": {
             "description": "Channel MID",
             "required": true
+        },
+        "X_Cybozu_API_Token1": {
+            "description": "Kintone GET API1",
+            "required": true
+        },
+        "X_Cybozu_API_Token2": {
+            "description": "Kintone GET API2",
+            "required": true
+        },
+        "X_Cybozu_Authorization": {
+            "description": "Kintone PUT API",
+            "required": true
         }
     },
     "addons": [
