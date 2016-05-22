@@ -114,6 +114,7 @@ class CallbackResource(object):
                     exp = base_exp + int(int(self.state['Item'][5]) * 0.1)
                     update_user_info(str(mgold), str(exp))
                 else:
+                    logger.debug("state {}".format(self.state))
                     text = 'よくわかりませんでした'
                 send_content = self.create_text(msg, text)
             else:
