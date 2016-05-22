@@ -101,7 +101,7 @@ class CallbackResource(object):
                     text = 'クーポン使ったよ'
                     # ger user info
                     user = get_user_by_id()
-                    base_mgold, base_exp = user['record']['mgold'], user['record']['exp']
+                    base_mgold, base_exp = user['record']['mgold']['value'], user['record']['exp']['value']
                     # update user info
                     mgold = base_mgold - int(self.price * 0.1)
                     exp = base_exp - int(self.price * 0.1)
