@@ -5,6 +5,7 @@ from logging import DEBUG, StreamHandler, getLogger
 import requests
 import base64
 import falcon
+from kintone import *
 
 # logger
 logger = getLogger(__name__)
@@ -87,6 +88,9 @@ class CallbackResource(object):
                     text = '買っといたよ〜'
                     logger.debug("Item ID: {}".format(self.item_id))
                     logger.debug("Shop ID: {}".format(self.shop_id))
+                    # text=クーポンあるけど使う？
+                    coupon = get_coupon_by_id()
+                    logger.debug(("Coupon: {}".format(coupon)))
                 elif utt == 'いいえ':
                     text = '買わなかったよ〜'
                 else:
@@ -103,32 +107,6 @@ class CallbackResource(object):
             else:
                 text = '未対応の処理'
                 send_content = self.create_sticker(msg, text)
-
-            """
-            send_content = {
-                'to': [msg['content']['from']],
-                'toChannel': 1383378250,  # Fixed value
-                'eventType': '138311608800106203',  # Fixed value
-                'content': {
-                    'contentType': 1,
-                    'toType': 1,
-                    'text': text,
-                },
-            }
-
-
-            send_content = {
-                'to': [msg['content']['from']],
-                'toChannel': 1383378250,  # Fixed value
-                'eventType': '138311608800106203',  # Fixed value
-                'content': {
-                    'contentType': 8,
-                    'contentMetadata': {'SKIP_BADGE_COUNT': 'true', 'STKTXT': '[ビシッ]', 'STKVER': '100', 'AT_RECV_MODE': '2', 'STKID': '13', 'STKPKGID': '1'},
-                    'toType': 1,
-                    'text': text,
-                },
-            }
-            """
 
             send_content = json.dumps(send_content)
 
