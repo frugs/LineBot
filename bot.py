@@ -21,7 +21,6 @@ PROXIES = {
 }
 
 
-
 class CallbackResource(object):
     # line
     header = {
@@ -83,101 +82,17 @@ class CallbackResource(object):
         logger.debug('receive_params: {}'.format(receive_params))
 
         for msg in receive_params['result']:
-            """
-            content_type = msg['content']['contentType']
-            if content_type == 2:  # Image
-                self.__class__.buy, self.__class__.use, self.__class__.item = False, False, ()
-                decode_data = self._get_image(msg['content']['id'])
-                self.__class__.item = tuple(decode_data.decode("utf-8").split(','))
-                text = 'この{0}円の{1}買う？'.format(self.item[5],self.item[4])
-                logger.debug("decode_data: {}".format(decode_data))
-                send_content = self.create_text(msg, text)
-            elif content_type == 1:  # Text
-                utt = msg['content']['text']
-                if self.__class__.buy == False and utt == '買っといて':
-                    # text=クーポンあるけど使う？
-                    coupon = get_coupon_by_id()
-                    coupon_name = coupon['record']['name']['value']
-                    text = '{0}があるけど使う？'.format(coupon_name)
-                    self.__class__.buy = True
-                elif self.__class__.buy == False and utt == 'いいえ':
-                    text = '買わなかったよ〜'
-                elif self.__class__.buy and (self.__class__.use == False) and utt == '使わない':
-                    text = '使わなかったよ'
-                elif self.__class__.buy and (self.__class__.use == False) and utt == 'お願い':
-                    text = 'クーポン使ったよ'
-                    # ger user info
-                    self.__class__.use = True
-                    user = get_user_by_id()
-                    base_mgold, base_exp = int(user['record']['mgold']['value']), int(user['record']['exp']['value'])
-                    # update user info
-                    mgold = base_mgold + int(int(self.item[5]) * 0.1)
-                    exp = base_exp + int(int(self.item[5]) * 0.1)
-                    update_user_info(str(mgold), str(exp))
-                else:
-                    #logger.debug("unk state {}".format(self.state))
-                    #logger.debug("unk state {}".format(self.__class__.state))
-                    text = 'よくわかりませんでした'
-                send_content = self.create_text(msg, text)
-            else:
-                text = "Error Handling"
-                send_content = self.create_sticker(msg, text)
-            logger.debug("unk state {} {} {}".format(self.__class__.buy, self.__class__.use, self.__class__.item))
-            #logger.debug("unk state {}".format(self.__class__.state))
-
-
-            """
             if msg['content']['contentType'] == 1:  # Text
                 utt = msg['content']['text']
-                if utt == '買っといて':
-                    logger.debug("Item ID: {}".format(self.item_id))
-                    logger.debug("Shop ID: {}".format(self.shop_id))
-
-                    # text=クーポンあるけど使う？
-                    coupon = get_coupon_by_id()
-                    logger.debug(("Coupon: {}".format(coupon)))
-                    coupon_name = coupon['record']['name']['value']
-                    text = '{0}があるけど使う？'.format(coupon_name)
-                elif utt == 'いいえ':
-                    text = '買わなかったよ〜'
-                elif utt == '使わない':
-                    text = '使わなかったよ'
-                elif utt == 'お願い':
-                    text = 'クーポン使ったよ'
-                    # ger user info
-                    user = get_user_by_id()
-                    base_mgold, base_exp = int(user['record']['mgold']['value']), int(user['record']['exp']['value'])
-                    # update user info
-                    mgold = base_mgold + int(int(self.price) * 0.1)
-                    exp = base_exp + int(int(self.price) * 0.1)
-                    logger.debug('exp: {}, mgold: {}, {},{}'.format(exp, mgold, type(exp), type(mgold)))
-                    update_user_info(str(mgold), str(exp))
-                else:
-                    text = 'よくわかりませんでした'
-                send_content = self.create_text(msg, text)
-            elif msg['content']['contentType'] == 2:  # Image
-                # Confirm whether purchase or not
-                decode_data = self._get_image(msg['content']['id'])
-                items = decode_data.decode("utf-8").split(',')
-                text = 'この{0}円の{1}買う？'.format(items[5],items[4])
-                self.shop_id, self.item_id, self.price = items[0], items[1], items[5]
-                logger.debug("decode_data: {}".format(decode_data))
-                send_content = self.create_text(msg, text)
-            else:
                 text = '未対応の処理'
                 send_content = self.create_sticker(msg, text)
-
-
-
-
-
 
             send_content = json.dumps(send_content)
 
             res = requests.post(ENDPOINT_URI, data=send_content, headers=self.header, proxies=PROXIES)
 
             resp.body = json.dumps('OK')
-
+            
 
 api = falcon.API()
 api.add_route('/callback', CallbackResource())
