@@ -5,7 +5,6 @@ from logging import DEBUG, StreamHandler, getLogger
 import requests
 import base64
 import falcon
-from kintone import *
 
 # logger
 logger = getLogger(__name__)
@@ -32,33 +31,6 @@ class CallbackResource(object):
     item_id, shop_id, price = None, None, 10000
     #state = {"Buy?": False, "Use?": False, "Item": []}
     buy, use, item = False, False, ()
-
-    def _get_image(self, content_id):
-        line_url = 'https://trialbot-api.line.me/v1/bot/message/' + content_id + '/content/'
-
-        # 画像の取得
-        result = requests.get(line_url, headers=self.header, proxies=PROXIES)
-
-        #logger.debug('receive image: {}'.format(result.content))
-        img = result.content
-
-        img = base64.encodestring(img).decode('utf-8')
-        content = {'img': img}
-        res = requests.post('http://52.196.88.89:8000/scanner', data=json.dumps(content))
-        return res.content
-
-    def create_text(self, msg, text):
-        send_content = {
-            'to': [msg['content']['from']],
-            'toChannel': 1383378250,  # Fixed value
-            'eventType': '138311608800106203',  # Fixed value
-            'content': {
-                'contentType': 1,
-                'toType': 1,
-                'text': text,
-            },
-        }
-        return send_content
 
     def create_sticker(self, msg, text):
         send_content = {
